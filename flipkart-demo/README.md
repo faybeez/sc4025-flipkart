@@ -49,8 +49,12 @@ All illustrations come from `public/assets`; mappings are in `components/demo-as
 npm run lint
 npx tsc --noEmit
 npm run build
+node scripts/test-ui.mjs
 node scripts/test-sync.mjs
 ```
 
+The browser check uses Microsoft Edge and expects the app on port 3001 (override with DEMO_URL). It verifies manual interactions in isolated browser sessions and can run while the database is offline.
+
 The sync check needs the local stack running. It tests authentication policies, realtime delivery, independent concurrent field edits, cross-session chat, and private attachments. It restores order fields after testing and adds clearly labelled verification messages.
+
 

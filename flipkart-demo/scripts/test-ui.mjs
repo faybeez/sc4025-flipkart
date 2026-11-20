@@ -10,7 +10,7 @@ try {
   await page.getByLabel('Delivery state',{exact:true}).selectOption('confirmed');
   await page.getByRole('button',{name:'View Checks',exact:true}).click();
   await page.getByRole('heading',{name:'What to check',exact:true}).waitFor();
-  await page.getByRole('button',{name:'Back',exact:true}).click();
+  await page.getByRole('button',{name:'Back to order details',exact:true}).click();
   await page.getByLabel('Delivery state',{exact:true}).selectOption('shipped');
   await page.getByLabel('Shipping progress',{exact:true}).selectOption('2');
   await page.getByText('Your item has reached the nearest delivery hub',{exact:true}).waitFor();
@@ -18,7 +18,7 @@ try {
   await page.getByRole('button',{name:'Send a chat to driver'}).click();
   await page.getByLabel('Type a message',{exact:true}).fill('Please call when you arrive');
   await page.getByRole('button',{name:'Send message',exact:true}).click();
-  await page.getByText('Please call when you arrive',{exact:true}).waitFor();
+  await page.getByRole('log',{name:'Conversation'}).getByText('Please call when you arrive',{exact:true}).waitFor();
   await page.getByRole('button',{name:'Back to delivery details'}).click();
   await page.getByLabel('Delivery state',{exact:true}).selectOption('cancelled');
   await page.getByRole('button',{name:/reschedule/i}).first().waitFor();
@@ -43,3 +43,5 @@ try {
   await driverContext.close();
   console.log('PASS: customer checks, manual delivery/shipping states, chat, cancellation, arrival, delivered, driver parcels/start/navigation/chat; no browser runtime errors.');
 } finally {await browser.close();}
+
+

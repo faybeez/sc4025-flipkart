@@ -699,3 +699,4 @@ button:focus-visible, a:focus-visible, textarea:focus-visible { outline: 3px sol
 .chat-file-link { background: transparent; border: 0; color: inherit; text-decoration: underline; padding: 0; cursor: pointer; }
 @keyframes manual-screen-in { from { opacity: .5; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 @media(prefers-reduced-motion: reduce) { .manual-screen { animation: none; } }
+.chat-error { color: #b42318; font-size: 13px; margin: 8px 16px; }
