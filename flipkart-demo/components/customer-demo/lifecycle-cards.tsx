@@ -1,0 +1,33 @@
+"use client";
+import { useState } from "react";
+import { ImageSlot } from "@/components/orders/image-slot";
+import { Icon } from "@/components/orders/icon";
+import { CustomerDeliveryMap, DeliveryPartnerCard } from "@/components/orders/last-mile-delivery";
+import { InspectionChecklist } from "@/components/orders/open-box-details";
+import { demoAssets } from "@/components/demo-assets";
+import { useDemoOrder } from "@/lib/demo/store";
+import { customerFlowAssets as assets } from "./demo-data";
+
+export function CancelledDelivery({ onReason, onReschedule }: { onReason: () => void; onReschedule: () => void }) {
+  return <section className="order-card cancelled-delivery" data-demo-target="cancelled"><div className="cancelled-summary"><ImageSlot src={assets.cancelled} className="cancelled-parcel" /><div><h2>Today’s delivery attempt was cancelled</h2><p>Your parcel will be shipped out again soon.</p><p>We’ll notify you once a new delivery date is confirmed.</p></div></div><button data-demo-tap="cancel-map" className="cancelled-map-link" onClick={onReason}><ImageSlot src={assets.floodMap} className="flood-map-thumbnail" /><span><strong>View last delivery map</strong><small>See why this attempt was cancelled</small></span><Icon name="chevron" /></button><button data-demo-tap="reschedule" className="primary-button reschedule-button" onClick={onReschedule}>Reschedule delivery</button></section>;
+}
+export function ArrivedDelivery({ onChat, onInspect }: { onChat: () => void; onInspect: () => void }) {
+  const [expanded, setExpanded] = useState(false);
+  return <section className="arrived-delivery" data-demo-target="arrival"><h2>Your delivery partner has arrived!</h2><p>Rahul has reached your location.</p><div className="arrival-status-art" role="img" aria-label="Delivery status: Arrived"><ImageSlot src={assets.arrived} className="arrival-status-card-image" /></div><DeliveryPartnerCard onChat={onChat} /><div className="order-card arrival-actions"><button data-demo-tap="inspect" className="primary-button" onClick={onInspect}>Inspect before sharing OTP</button><button className="text-button" aria-expanded={expanded} aria-controls="arrived-map" onClick={() => setExpanded(value => !value)}>View delivery location <Icon name="chevron" /></button><div id="arrived-map" className={`location-map-reveal ${expanded ? "is-open" : ""}`} inert={!expanded} aria-hidden={!expanded}><div className="location-map-inner"><CustomerDeliveryMap /></div></div></div></section>;
+}
+export function FloodReason({ onClose }: { onClose: () => void }) {
+  return <div className="scene-overlay"><section className="scene-dialog flood-reason" role="dialog" aria-labelledby="flood-title"><div className="card-heading"><h2 id="flood-title">Why was delivery cancelled?</h2><button className="icon-button" aria-label="Close cancellation details" onClick={onClose}><Icon name="close" /></button></div><p>Flooding blocked the delivery route. Your delivery partner could not safely reach your location.</p><p className="recorded-map-label">Last recorded delivery map</p><ImageSlot src={assets.floodMap} className="flood-recorded-map" /><small>21 Jul, 1:30 PM</small><hr /><p>Your parcel will be shipped out again soon.<br />We’ll notify you once a new delivery date is confirmed.</p><button data-demo-tap="modal-confirm" className="primary-button" onClick={onClose}>Got it</button></section></div>;
+}
+export function OtpWarning({ onClose }: { onClose: () => void }) {
+  return <div className="scene-overlay"><section className="scene-dialog otp-inspection" role="dialog" aria-labelledby="otp-title"><div className="otp-intro"><ImageSlot src={demoAssets.inspectionHero} className="otp-hero" /><div><h2 id="otp-title">Your delivery partner has reached your location</h2><p>Inspect your item before sharing the delivery OTP.</p></div></div><aside className="otp-reminder"><ImageSlot src={demoAssets.otpWarning} className="reminder-image" /><p>Share the delivery OTP only after completing the checks.</p></aside><h3>Inspect before sharing OTP</h3><p>Your delivery partner will open the package in front of you.</p><InspectionChecklist /><button data-demo-tap="modal-confirm" className="primary-button" onClick={onClose}>Got it</button></section></div>;
+}
+function Stars({ value, onChange, label }: { value: number; onChange: (rating: number) => void; label: string }) {
+  return <div className="rating-stars" role="group" aria-label={label}>{[1,2,3,4,5].map(star => <button data-demo-tap={`${label === "Rate the product" ? "product" : "delivery"}-star-${star}`} key={star} aria-label={`${star} ${star === 1 ? "star" : "stars"}`} aria-pressed={value === star} onClick={() => onChange(star)}><ImageSlot src={value >= star ? assets.starFilled : assets.star} className="rating-star-image" /></button>)}</div>;
+}
+export function DeliveredCards({ ratingVisible, rated, productRating, deliveryRating, onRateProduct, onRateDelivery, onSubmitRating, onReturn }: { ratingVisible: boolean; rated: boolean; productRating: number; deliveryRating: number; onRateProduct: (value: number) => void; onRateDelivery: (value: number) => void; onSubmitRating: () => void; onReturn: () => void }) {
+  const order = useDemoOrder();
+  return <><section className="order-card rate-product" data-demo-target="rating"><h2>Rate this product</h2><p>How was your product?</p><Stars label="Rate the product" value={productRating} onChange={onRateProduct} />{ratingVisible && <><div className="rating-delivery-heading"><ImageSlot src={assets.riderFeedback} className="feedback-rider" /><div><h3>Rate your delivery experience</h3><p>How was your delivery with Rahul?</p></div></div><Stars label="Rate the delivery" value={deliveryRating} onChange={onRateDelivery} />{rated ? <p className="rating-thanks" role="status">Thank you! Your rating has been submitted.</p> : <button data-demo-tap="submit-rating" className="primary-button" disabled={!productRating || !deliveryRating} onClick={onSubmitRating}>Submit rating</button>}</>}</section><section className="order-card returns-card"><div><h2>Returns &amp; refunds</h2><p>Check return eligibility for this item.</p><button data-demo-tap="request-return" className="primary-button" onClick={onReturn}>Request a return</button></div><ImageSlot src={assets.returns} className="returns-image" /><p className="return-policy">Return and refund eligibility depends on this item’s policy.<br /><button className="text-button" onClick={onReturn}>View refund steps</button></p></section><section className="order-card experience-card"><h2>Rate your experience</h2><p>Did you find this page helpful?</p><span className="experience-note">Your order total: {order.price}</span></section></>;
+}
+
+
+
